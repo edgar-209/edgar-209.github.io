@@ -1,0 +1,93 @@
+body {
+  background-color: #818f9c; /* Light blue-gray background for the whole page */
+  font-family: story script;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Navigation Bar --- */
+nav {
+  background-color: #1743a3c0; /* Dark gray background for the nav bar */
+  color: rgb(0, 0, 0);
+  padding: 10px 20px;
+  overflow: auto; /* Clears the float */
+}
+
+nav h1 {
+  float: left;
+  margin: 0;
+  font-size: 30px;
+}
+
+#nav-ul {
+  float: right;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-li {
+  display: inline-block; /* Makes list items horizontal */
+  margin-left: 10px;
+  padding-top: 5px;
+}
+
+.nav-li a {
+  color: white; /* White text for links */
+  text-decoration: none;
+  font-size: 20px;
+}
+
+.nav-li a:hover {
+  color: #5e9d99; /* Changes color on hover */
+}
+
+/* --- Main Content Layout --- */
+main {
+  display: flex; /* Arranges sidebar and content side-by-side */
+  padding: 40px;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+  flex: 1; /* Takes up 1 part of the space */
+  padding: 50px;
+  background-color: rgb(160, 160, 168); /* White background for the sidebar */
+  margin-right: 20px;
+  border-radius: 8px;
+  box-shadow: 0 24px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-img {
+  width: 110%;
+  max-width: 500px;
+  height: auto;
+  border-radius: 0%; /* Makes the image circular */
+  display: block;
+  margin: 0 auto; /* Centers the image */
+  border: 1px solid #000000; /* Adds a colored border */
+}
+
+/* --- Content Area --- */
+.content {
+  flex: 3; /* Takes up 3 parts of the space (larger) */
+  background-color: #a2a2ac; /* White background for content */
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 24px 4px rgba(0,0,0,0.1);
+}
+
+.content h2 {
+  color: #333333; /* Dark text for the main heading */
+  border-bottom: 40px solid #2c415373; /* A light underline */
+  padding-bottom: 10px;
+}
+
+#interests h3 {
+  color: #346966; /* Color for the "Interests" heading */
+}
+
+#interests ul {
+  list-style: square;
+  padding-left: 20px;
+}
