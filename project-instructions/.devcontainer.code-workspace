@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": "../.devcontainer"
+		},
+		{
+			"path": "../.github"
+		},
+		{
+			"path": "../fsd-projects"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../scripts"
+		}
+	],
+	"settings": {
+	}
+}

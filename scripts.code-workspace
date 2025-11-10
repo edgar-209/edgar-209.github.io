@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "scripts"
+		},
+		{
+			"path": "project-instructions"
+		},
+		{
+			"path": "fsd-projects"
+		},
+		{
+			"path": ".github"
+		},
+		{
+			"path": ".devcontainer"
+		}
+	]
+}

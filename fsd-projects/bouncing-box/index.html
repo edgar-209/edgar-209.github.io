@@ -1,108 +1,245 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Bouncing Box</title>
-    <script src="jquery.min.js"></script>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Bouncing Box Game</title>
+    <!-- Load Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      .box {
-        width: 70px;
-        height: 70px;
-        background-color: teal;
-        font-size: 300%;
-        text-align: center;
-        user-select: none;
-        display: block;
-        position: absolute;
-        top: 100px;
-        /* Change me! */
-        left: 0px;
-      }
+        /* Apply custom font and background */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Hide potential scrollbars */
+        }
+       
+        /* The main game area container */
+        #game-area {
+            position: relative;
+            width: 90vw;
+            max-width: 800px;
+            height: 200px;
+            background-color: #1e293b; /* Slate 800 */
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+        }
 
-      .board {
-        height: 100vh;
-      }
+
+        /* The box that moves and is clicked */
+        #box {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 80px;
+            height: 80px;
+            background-color: #3b82f6; /* Blue 500 */
+            border-radius: 0.5rem;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.1s ease-out, transform 0.1s ease-out;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            left: 0; /* Initial position */
+           
+            /* Custom bounce-back animation on click */
+            animation: none;
+        }
+
+
+        #box:hover {
+            background-color: #2563eb; /* Blue 600 */
+        }
+
+
+        #box:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 600px) {
+            #game-area {
+                width: 95vw;
+                height: 150px;
+            }
+            #box {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+        }
     </style>
-    <!-- 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
-  </head>
+</head>
+<body>
+    <div id="game-area">
+        <div id="box" aria-label="Bouncing box, click to score">0</div>
+    </div>
 
-  <body class="board">
-    <!-- HTML for the box -->
-    <div class="box">?</div>
 
     <script>
-      (function () {
-        "use strict";
-        /* global jQuery */
+        // --- Game Setup Variables and Constants ---
+        const box = document.getElementById('box');
+        const gameArea = document.getElementById('game-area');
 
-        //////////////////////////////////////////////////////////////////
-        /////////////////// SETUP DO NOT DELETE //////////////////////////
-        //////////////////////////////////////////////////////////////////
 
-        var box = jQuery(".box"); // reference to the HTML .box element
-        var board = jQuery(".board"); // reference to the HTML .board element
-        var boardWidth = board.width(); // the maximum X-Coordinate of the screen
-
-        // update the boardWidth variable when the window is resized
-        jQuery(window).on("resize", function () {
-          boardWidth = board.width();
-        });
-
-        // Every 50 milliseconds, call the update Function (see below)
-        setInterval(update, 50);
-
-        // Every time the box is clicked, call the handleBoxClick Function (see below)
-        box.on("click", handleBoxClick);
-
-        // moves the Box to a new position on the screen along the X-Axis
-        function moveBoxTo(newPositionX) {
-          box.css("left", newPositionX);
+        // Dynamically calculate the maximum x-position the box can reach
+        let boardWidth;
+        function calculateBoardWidth() {
+            // boardWidth is the area width minus the box width
+            boardWidth = gameArea.clientWidth - box.clientWidth;
         }
 
-        // changes the text displayed on the Box
-        function changeBoxText(newText) {
-          box.text(newText);
-        }
 
-        //////////////////////////////////////////////////////////////////
-        /////////////////// YOUR CODE BELOW HERE /////////////////////////
-        //////////////////////////////////////////////////////////////////
-
-        // TODO 2 - Variable declarations
+        // --- Variable declarations below here (TODO 2, 4, 5) ---
+        var positionX = 0; // Tracks the box's current x-position
+        var points = 0;    // Tracks the score (number of clicks)
+        var speed = 10;    // Tracks the speed (initial value is 10)
 
 
-
+        // --- Utility Functions (Provided in project setup) ---
 
 
         /**
-         * This Function will be called 20 times/second.
-         * Each time it is called, it should move the Box to a new location.
-         * If the box drifts off the screen, turn it around!
+         * Moves the box horizontally by setting its CSS 'left' property.
+         * @param {number} x The new x-position (in pixels) for the box.
+         */
+        function moveBoxTo(x) {
+            box.style.left = x + 'px';
+        }
+
+
+        /**
+         * Updates the text content displayed inside the box.
+         * @param {string | number} text The text/score to display.
+         */
+        function changeBoxText(text) {
+            box.textContent = text;
+        }
+
+
+        // --- The Game Loop Function (Runs 20 times per second) ---
+        /**
+         * The main game update logic.
+         * This function handles movement and boundary checks.
          */
         function update() {
+            // Update positionX
+            // Add 'speed' to 'positionX' to move the box
+            positionX += speed;
 
-        
 
-          
+            // Bounce off the Right Side
+            // Check if positionX is greater than boardWidth
+            if (positionX > boardWidth) {
+                // Reverse direction by multiplying speed by -1
+                speed *= -1;
+                // Snap the box to the edge to prevent clipping
+                positionX = boardWidth;
+            }
+
+
+            // Bounce off the Left Side
+            // Check if positionX is less than 0
+            if (positionX < 0) {
+                // Reverse direction by multiplying speed by -1
+                speed *= -1;
+                // Snap the box to the edge to prevent clipping
+                positionX = 0;
+            }
+
+
+            // Move the Box
+            // Call moveBoxTo with the dynamically updating positionX
+            moveBoxTo(positionX);
         }
-
+       
+        // --- Event Handler (Runs when the box is clicked) ---
         /**
-         * This Function will be called each time the box is clicked.
-         * Each time it is called, it should perform each of the following actions:
-         * - increase the points total
-         * - increase the speed
-         * - move the box to the left side of the screen.
+         * Logic that executes when the box is clicked.
          */
         function handleBoxClick() {
+            // Reset positionX to the starting point
+            positionX = 0;
 
 
+            // Increment the score
+            points++;
 
 
+            // --- Random Direction Logic ---
+            // 1. Calculate the base magnitude (positive value) of the speed
+            let speedMagnitude = 3 * points + 10;
+           
+            // 2. Use Math.random() to decide the initial direction (50% chance for left or right)
+            if (Math.random() < 0.5) {
+                // If random number is < 0.5, set speed to negative (moves left)
+                speed = -speedMagnitude;
+            } else {
+                // Otherwise, set speed to positive (moves right)
+                speed = speedMagnitude;
+            }
+           
+            // Update the text on the box (using the new points variable)
+            changeBoxText(points);
         }
 
 
-        
-      })();
+        // --- Main Game Initialization and Loop Setup ---
+       
+        let lastTime = 0;
+        const fps = 20; // Target frames per second
+        const interval = 1000 / fps;
+
+
+        /**
+         * Drives the game loop using requestAnimationFrame for smooth updates.
+         * @param {DOMHighResTimeStamp} timestamp The current time provided by the browser.
+         */
+        function gameLoop(timestamp) {
+            requestAnimationFrame(gameLoop);
+
+
+            // Throttle the update function to run at the desired FPS (20 times per second)
+            if (timestamp - lastTime >= interval) {
+                lastTime = timestamp;
+                update();
+            }
+        }
+
+
+        // Setup function runs when the window loads
+        window.onload = function() {
+            // Calculate initial board width
+            calculateBoardWidth();
+
+
+            // Set up event listener for the box
+            box.addEventListener('click', handleBoxClick);
+           
+            // Set initial display text
+            changeBoxText(points);
+
+
+            // Start the game loop
+            gameLoop(0);
+        };
+       
+        // Handle resizing for responsiveness
+        window.addEventListener('resize', calculateBoardWidth);
+
+
     </script>
-  </body>
+</body>
 </html>

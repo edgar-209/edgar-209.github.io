@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../.github"
+		},
+		{
+			"path": "../fsd-projects"
+		},
+		{
+			"path": "../project-instructions"
+		},
+		{
+			"path": "../scripts"
+		}
+	]
+}

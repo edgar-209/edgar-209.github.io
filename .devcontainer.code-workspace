@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": ".devcontainer"
+		},
+		{
+			"path": ".github"
+		},
+		{
+			"path": "fsd-projects"
+		},
+		{
+			"path": "project-instructions"
+		},
+		{
+			"path": "scripts"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "project-instructions",
+		"liveServer.settings.port": 5501
+	}
+}
