@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bouncing Box</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f0f0;
+      }
+      .box {
+        width: 70px;
+        height: 70px;
+        background-color: #00796b; /* Teal color for visual appeal */
+        color: white;
+        font-size: 300%;
+        font-weight: bold;
+        text-align: center;
+        line-height: 70px; /* Center text vertically */
+        user-select: none;
+        display: block;
+        position: absolute;
+        top: 100px;
+        left: 0px;
+        cursor: pointer;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.1s;
+      }
+      .box:active {
+        transform: scale(0.95);
+      }
+      .board {
+        height: 100vh;
+      }
+    </style>
+  </head>
+
+  <body class="board">
+    <!-- HTML for the box -->
+    <div class="box">?</div>
+
+    <script>
+      (function () {
+        "use strict";
+        /* global jQuery */
+
+        //////////////////////////////////////////////////////////////////
+        /////////////////// SETUP DO NOT DELETE //////////////////////////
+        //////////////////////////////////////////////////////////////////
+
+        var box = jQuery(".box"); // reference to the HTML .box element
+        var board = jQuery(".board"); // reference to the HTML .board element
+        var boardWidth = board.width(); // the maximum X-Coordinate of the screen
+        var boardHeight = board.height(); // NEW: Maximum Y-Coordinate of the screen
+
+        // update the boardWidth and boardHeight variables when the window is resized
+        jQuery(window).on("resize", function () {
+          boardWidth = board.width();
+          boardHeight = board.height();
+        });
+
+        // Every 50 milliseconds, call the update Function (see below)
+        setInterval(update, 50);
+
+        // Every time the box is clicked, call the handleBoxClick Function (see below)
+        box.on("click", handleBoxClick);
+
+        // NEW: Function now moves the Box in both X and Y directions
+        function moveBoxTo(newPositionX, newPositionY) {
+          box.css("left", newPositionX);
+          box.css("top", newPositionY);
+        }
+
+        // changes the text displayed on the Box
+        function changeBoxText(newText) {
+          box.text(newText);
+        }
+
+        //////////////////////////////////////////////////////////////////
+        /////////////////// YOUR CODE BELOW HERE /////////////////////////
+        //////////////////////////////////////////////////////////////////
+
+        // Variable declarations
+        var positionX = 0;
+        // NEW: Vertical position, starting at 100px (matches CSS top: 100px)
+        var positionY = 100;
+        var points = 0;
+        // speed controls the horizontal movement
+        var speed = 10;
+        // NEW: speedY controls the vertical movement
+        var speedY = 10;
+        var boxWidth = box.width(); // Get the box's width/height for accurate boundary checking
+
+        /**
+         * This Function will be called 20 times/second.
+         * Each time it is called, it should move the Box to a new location.
+         * If the box drifts off the screen, turn it around!
+         */
+        function update() {
+          // --- X-AXIS MOVEMENT ---
+          positionX += speed;
+
+          // --- Y-AXIS MOVEMENT (NEW) ---
+          positionY += speedY;
+
+          // Move the box to the new position
+          moveBoxTo(positionX, positionY);
+
+          // --- X-AXIS BOUNDARY CHECK ---
+          // Bounce off the right side
+          if (positionX > boardWidth - boxWidth) {
+            speed *= -1; // Reverse horizontal speed
+          }
+
+          // Bounce off the left side
+          if (positionX < 0) {
+            speed *= -1; // Reverse horizontal speed
+            positionX = 0;
+          }
+
+          // --- Y-AXIS BOUNDARY CHECK (NEW) ---
+          // Bounce off the bottom
+          if (positionY > boardHeight - boxWidth) {
+            speedY *= -1; // Reverse vertical speed
+          }
+          
+          // Bounce off the top
+          if (positionY < 0) {
+            speedY *= -1; // Reverse vertical speed
+            positionY = 0;
+          }
+        }
+
+        /**
+         * This Function will be called each time the box is clicked.
+         * Each time it is called, it should perform each of the following actions:
+         * - increase the points total
+         * - set speed using the linear formula
+         * - move the box to the left side of the screen.
+         */
+        function handleBoxClick() {
+          // Reset position to the starting point
+          positionX = 0;
+          positionY = 100;
+
+          // Increment the points
+          points++;
+
+          // Calculate the new speed magnitude based on points (linear formula)
+          var newSpeedMagnitude = 3 * points + 10;
+
+          // Randomize Horizontal Speed and Direction
+          // The speed value will be either positive or negative newSpeedMagnitude
+          var randomXDirection = Math.random() < 0.5 ? 1 : -1;
+          speed = newSpeedMagnitude * randomXDirection;
+
+          // Randomize Vertical Speed and Direction (NEW)
+          // Uses the same magnitude for a consistent speed increase
+          var randomYDirection = Math.random() < 0.5 ? 1 : -1;
+          speedY = newSpeedMagnitude * randomYDirection;
+
+
+          // Display the current score on the box
+          changeBoxText(points);
+        }
+      })();
+    </script>
+  </body>
+</html>
